@@ -4,6 +4,15 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 
+import { RouterModule, Routes } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
+
+const appRoutes: Routes = [
+  { path: 'login', loadChildren: 'app/login/login.module#LoginModule' },
+  { path: 'home', loadChildren: 'app/home/home.module#HomeModule' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' }
+]
 
 @NgModule({
   declarations: [
@@ -11,7 +20,12 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule.forRoot(
+      appRoutes,
+      { enableTracing: false } // <-- debugging purposes only
+    ),
+    NgbModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
