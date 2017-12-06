@@ -3,20 +3,27 @@
     <div class="card-header">
       {{link.title}}
     </div>
-    <div class="card-body">
-      <form>
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
+      <div class="card-body">
         <div *ngIf="!link.signin">
-          <div class="form-group">
-            <label for="firstname">Prénom</label>
-            <input required id="firstname" type="text" class="form-control" placeholder="Prénom" aria-label="firstname">
-          </div>
-          <div class="form-group">
-            <label for="lastname">Nom</label>
-            <input required id="lastname" type="text" class="form-control" placeholder="Nom" aria-label="lastname">
+          <div class="row">
+            <div class="form-group col-lg-6 col-md-6">
+              <label for="firstname">Prénom</label>
+              <input [(ngModel)]="model.firstname" name="firstname" required id="firstname" type="text" class="form-control" placeholder="Prénom"
+                aria-label="firstname" #name="ngModel">
+              <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
+                Le prénom est requis
+              </div>
+            </div>
+            <div class="form-group col-lg-6 col-md-6">
+              <label for="lastname">Nom</label>
+              <input [(ngModel)]="model.lastname" name="lastname" required id="lastname" type="text" class="form-control" placeholder="Nom"
+                aria-label="lastname">
+            </div>
           </div>
           <div class="form-group">
             <label for="phone">Téléphone</label>
-            <input id="phone" type="number" class="form-control" placeholder="Téléphone" aria-label="phone">
+            <input [(ngModel)]="model.phone" name="phone" id="phone" type="text" class="form-control" placeholder="Téléphone" aria-label="phone">
             <small *ngIf="!link.signin" id="phone" class="form-text text-muted">Ne sera jamais divulgué</small>
           </div>
         </div>
@@ -24,26 +31,28 @@
           <label for="email">Adresse mail</label>
           <div class="input-group">
             <span class="input-group-addon" id="at-addon">@</span>
-            <input required id="email" type="email" class="form-control" placeholder="Adresse e-mail" aria-label="email" aria-describedby="at-addon emailHelp">
+            <input [(ngModel)]="model.email" name="email" required id="email" type="email" class="form-control" placeholder="Adresse e-mail"
+              aria-label="email" aria-describedby="at-addon emailHelp">
           </div>
           <small *ngIf="!link.signin" id="emailHelp" class="form-text text-muted">Ne sera jamais divulgué</small>
         </div>
         <div class="form-group">
           <label for="pass1">Mot de passe</label>
-          <input required id="pass1" type="password" class="form-control" placeholder="Mot de passe" aria-label="password">
+          <input [(ngModel)]="model.password" name="password" required id="pass1" type="password" class="form-control" placeholder="Mot de passe"
+            aria-label="password">
         </div>
         <div *ngIf="!link.signin" class="form-group">
           <label for="pass2">Confirmation du mot de passe</label>
           <input required id="pass2" type="password" class="form-control" placeholder="Confirmer le mot de passe" aria-label="password">
         </div>
-      </form>
-    </div>
-    <div class="text-center card-footer">
-      <button class="btn btn-outline-primary" (click)="submit()">Valider</button>
-      <footer class="text-left font-italic">
-        {{link.signText}}
-        <a (click)="changeLink($event)" href>{{link.linkText}}</a>
-      </footer>
-    </div>
+      </div>
+      <div class="text-center card-footer">
+        <button class="btn btn-outline-primary" type="submit" [disabled]="!loginForm.form.valid">Valider</button>
+        <footer class="text-left font-italic">
+          {{link.signText}}
+          <a (click)="changeLink($event)" href>{{link.linkText}}</a>
+        </footer>
+      </div>
+    </form>
   </div>
 </div>

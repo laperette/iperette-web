@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { User, UserSignin, UserSignup, UserSignedIn } from '../../models/User';
+import { LoginService } from '../login.service';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -7,7 +10,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  constructor(private loginSvc: LoginService, private authSvc: AuthService) { }
 
   link = {
     signText: 'Pas encore inscrit ?',
@@ -28,20 +31,37 @@ export class LoginComponent implements OnInit {
       this.link.title = 'Inscription'
     }
   }
+  submitted = false;
+  model = new User();
 
-  submit() {
+  onSubmit() {
+    this.submitted = true;
     if (this.link.signin) {
-      this.signin()
+      let user: UserSignin = {
+        email: 'alex.beh@mail.com',
+        password: '123'
+      };
+      this.loginSvc.signin(user).subscribe((res: UserSignedIn) => {
+        this.authSvc.login(res)
+      }, err => {
+        console.error(err.error)
+      })
     } else {
-      this.signup()
+      let user: UserSignup = {
+        firstname: 'John',
+        lastname: 'Doe',
+        email: 'john.doe2@mail.com',
+        password: '123',
+        phone: '0198345645'
+      }
+      this.loginSvc.signup(user).subscribe((res: UserSignedIn) => {
+        this.authSvc.login(res)
+      }, err => {
+        console.error(err.error)
+      })
     }
   }
-  signin() {
-    console.log('signin')
-  }
-  signup() {
-    console.log('signup')
-  }
+  get diagnostic() { return JSON.stringify(this.model); }
 
   ngOnInit() {
   }
