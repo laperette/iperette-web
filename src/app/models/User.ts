@@ -1,9 +1,12 @@
 export class User {
     firstname: string = ""
     lastname: string = ""
-    mail: string = ""
+    email: string = ""
     phone: string = ""
     password: string = ""
+    constructor(first?: string, last?: string, email?: string) {
+
+    }
 }
 
 /** needed fields at sign up */
