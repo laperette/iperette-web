@@ -1,4 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -11,7 +13,7 @@ import { AuthService } from './auth.service';
 const appRoutes: Routes = [
   { path: 'login', loadChildren: 'app/login/login.module#LoginModule' },
   { path: 'home', loadChildren: 'app/home/home.module#HomeModule' },
-  { path: '', redirectTo: 'login', pathMatch: 'full' }
+  //{ path: '', redirectTo: 'login', pathMatch: 'full' }
 ]
 
 @NgModule({
@@ -20,6 +22,7 @@ const appRoutes: Routes = [
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     RouterModule.forRoot(
       appRoutes,

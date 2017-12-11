@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User, UserSignin, UserSignup, UserSignedIn } from '../../models/User';
 import { LoginService } from '../login.service';
 import { AuthService } from '../../auth.service';
@@ -10,14 +11,21 @@ import { AuthService } from '../../auth.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private loginSvc: LoginService, private authSvc: AuthService) { }
-
+  constructor(private fb: FormBuilder, private loginSvc: LoginService, private authSvc: AuthService) {
+    this.user = new User();
+  }
+  user: User
   link = {
     signText: 'Pas encore inscrit ?',
-    linkText: 'Déjà inscrit ?',
+    linkText: "S'inscrire",
     title: 'Connexion',
-    signin: true
+    signin: true,
+    signForm: this.fb.group({
+      email: ['', Validators.email],
+      password: ['', Validators.required]
+    })
   }
+
   changeLink(event) {
     event.preventDefault()
     this.link.signin = !this.link.signin
@@ -25,10 +33,21 @@ export class LoginComponent implements OnInit {
       this.link.signText = 'Pas encore inscrit ?'
       this.link.linkText = "S'inscrire"
       this.link.title = 'Connexion'
+      this.link.signForm = this.fb.group({
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', Validators.required]
+      });
     } else {
       this.link.signText = 'Déjà inscrit ?'
       this.link.linkText = 'Se connecter'
       this.link.title = 'Inscription'
+      this.link.signForm = this.fb.group({
+        firstname: ['', Validators.required],
+        lastname: ['', Validators.required],
+        phone: ['', [Validators.minLength(10), Validators.maxLength(10)]],
+        email: ['', Validators.email],
+        password: ['', Validators.required]
+      });
     }
   }
   submitted = false;
@@ -36,10 +55,12 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
+    const formModel = this.link.signForm.value;
+    console.log(formModel)
     if (this.link.signin) {
       let user: UserSignin = {
-        email: 'alex.beh@mail.com',
-        password: '123'
+        email: formModel.email as string,
+        password: formModel.password as string
       };
       this.loginSvc.signin(user).subscribe((res: UserSignedIn) => {
         this.authSvc.login(res)
@@ -48,11 +69,11 @@ export class LoginComponent implements OnInit {
       })
     } else {
       let user: UserSignup = {
-        firstname: 'John',
-        lastname: 'Doe',
-        email: 'john.doe2@mail.com',
-        password: '123',
-        phone: '0198345645'
+        firstname: formModel.firstname as string,
+        lastname: formModel.lastname as string,
+        email: formModel.email as string,
+        password: formModel.password as string,
+        phone: formModel.phone as string
       }
       this.loginSvc.signup(user).subscribe((res: UserSignedIn) => {
         this.authSvc.login(res)
