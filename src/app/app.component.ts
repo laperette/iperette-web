@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 export class AppComponent {
   title = 'iPerrette';
   constructor(private authSvc: AuthService, private router: Router) {
+    /** redirection logic */
     if (this.authSvc.isLoggedIn()) {
       this.router.navigate(['/home']);
     } else {

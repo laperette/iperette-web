@@ -9,11 +9,12 @@ import { AppComponent } from './app.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from './auth.service';
+import { AuthGuard } from './auth.guard';
 
 const appRoutes: Routes = [
   { path: 'login', loadChildren: 'app/login/login.module#LoginModule' },
-  { path: 'home', loadChildren: 'app/home/home.module#HomeModule' },
-  //{ path: '', redirectTo: 'login', pathMatch: 'full' }
+  { path: 'home', loadChildren: 'app/home/home.module#HomeModule', canActivate: [AuthGuard] },
+  { path: '', redirectTo: 'home', pathMatch: 'full' }
 ]
 
 @NgModule({
@@ -30,7 +31,7 @@ const appRoutes: Routes = [
     ),
     NgbModule.forRoot()
   ],
-  providers: [AuthService],
+  providers: [AuthService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

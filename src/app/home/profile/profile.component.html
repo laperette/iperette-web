@@ -1,3 +1,6 @@
-<p>
-  profile works!
-</p>
+<h1>
+  {{titre}} Les utilisateurs :
+</h1>
+<div *ngFor="let user of users">
+  <p [style.color]="user.color">{{user.firstname}} {{user.lastname}}</p>
+</div>

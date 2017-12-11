@@ -1,10 +1,20 @@
-<ul class="nav justify-content-center">
-  <li class="nav-item">
-    <a class="nav-link active" [routerLink]="'profil'">Mon profil</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link disabled" href="#">Calendrier</a>
-  </li>
-</ul>
+<div class="row justify-content-center">
+  <ul class="nav">
+    <li class="nav-item">
+      <a class="nav-link active" [routerLink]="['profil/']">Mon profil</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['calendar/']">Calendrier</a>
+    </li>
+  </ul>
+</div>
 <router-outlet></router-outlet>
-<app-profile></app-profile>
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <span class="text-muted text-xs-center">&copy; la Perette {{date}}.</span>
+      </div>
+    </div>
+  </div>
+</footer>

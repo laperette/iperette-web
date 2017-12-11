@@ -1,0 +1,28 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-9">
+      <div class="row">
+        <div class="col-md">
+          <button type="button" class="btn btn-primary" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="activeDayIsOpen = false">Précedent</button>
+          <button type="button" class="btn btn-primary" mwlCalendarToday [(viewDate)]="viewDate">Aujourd'hui</button>
+          <button type="button" class="btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="activeDayIsOpen = false">Suivant</button>
+        </div>
+        <div class="col-md">
+          <h2>{{ viewDate | calendarDate:(view + 'ViewTitle'):locale }}</h2>
+        </div>
+      </div>
+      <div *ngIf="events$ | async; else loading; let events">
+
+        <mwl-calendar-month-view [viewDate]="viewDate" [events]="events" [locale]="locale" [weekStartsOn]="weekStartsOn" [weekendDays]="weekendDays"
+          [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)" (eventClicked)="handleEvent('Clicked', $event.event)"
+          (beforeViewRender)="beforeMonthViewRender($event)">
+        </mwl-calendar-month-view>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <app-booking-form></app-booking-form>
+    </div>
+
+  </div>
+</div>

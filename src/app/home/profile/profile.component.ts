@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-profile',
@@ -7,9 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfileComponent implements OnInit {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
+
+  users = []
 
   ngOnInit() {
+    this.http.get('http://localhost:3000/users/').subscribe((res: any) => {
+      this.users = res;
+      console.log(res)
+    }, err => {
+      console.error(err)
+    })
   }
 
 }
