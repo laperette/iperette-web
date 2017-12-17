@@ -1,17 +1,23 @@
 <div class="card">
   <div class="card-body">
     <h4 class="card-title">Réserver</h4>
-    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
     <form>
       <div class="form-group">
-        <label for="dat1">Date de début</label>
-        <input name="date_debut" required id="dat1" type="date" class="form-control" placeholder="Date de début" aria-label="date_debut">
+        <ngb-datepicker name="datepicker" #dp ngModel (ngModelChange)="onDateChange($event)" [displayMonths]="1" [dayTemplate]="t">
+        </ngb-datepicker>
       </div>
       <div class="form-group">
-        <label for="dat2">Date de fin</label>
-        <input name="date_dfin" required id="dat2" type="date" class="form-control" placeholder="Date de fin" aria-label="date_fin">
+        <label for="numOfParticipants">Nombre de personnes</label>
+        <input id="numOfParticipants" class="form-control" name="numOfParticipants" [(ngModel)]="numOfParticipants" placeholder="Nombre de participants">
       </div>
+      <button (click)="onSubmit()" class="btn btn-sm btn-outline-primary">Je réserve !</button>
     </form>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
   </div>
 </div>
+
+<ng-template #t let-date="date" let-focused="focused">
+  <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)"
+    [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+    {{ date.day }}
+  </span>
+</ng-template>

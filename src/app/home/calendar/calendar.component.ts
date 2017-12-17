@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/operator/debounceTime'
+import { map } from 'rxjs/operators/map';
 import { BookingService } from '../booking.service'
 
 import {
@@ -70,6 +70,7 @@ export class CalendarComponent implements OnInit {
       }
     }
   }
+
   beforeMonthViewRender({ body }: { body: CalendarMonthViewDay[] }): void {
     body.forEach(day => {
       day.badgeTotal = day.events.filter(
@@ -77,23 +78,22 @@ export class CalendarComponent implements OnInit {
       ).length;
     });
   }
+
   ngOnInit() {
-    this.events$ = this.bookingService.getAllBookings().debounceTime(2000).map((resp) => {
-      console.log('bookings fetched : ', resp.bookings)
-      if (resp.bookings) {
-        return resp.bookings.map((val) => {
-          console.log(new Date(val.end))
+    this.events$ = this.bookingService.getAllBookings().map(res => res.bookings).pipe(
+      map(bookings => {
+        return bookings.map(booking => {
+          console.debug("booking : ", booking)
           return {
-            title: val.booker.firstname + ' ' + val.booker.lastname,
-            start: new Date(val.start),
-            end: new Date(val.end),
-            color: { primary: val.booker.color },
-            meta: { val }
+            title: booking.booker.firstname + ' ' + booking.booker.lastname,
+            start: new Date(booking.start),
+            end: new Date(booking.end),
+            color: { primary: booking.booker.color },
+            meta: { booking }
           }
-        })
-      } else {
-        return []
-      }
-    })
+        });
+      })
+    );
+    this.events$.subscribe(ev => { console.debug(ev) })
   }
 }
