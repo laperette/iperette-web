@@ -83,7 +83,7 @@ export class CalendarComponent implements OnInit {
     this.events$ = this.bookingService.getAllBookings().map(res => res.bookings).pipe(
       map(bookings => {
         return bookings.map(booking => {
-          console.debug("booking : ", booking)
+          //console.debug("booking : ", booking)
           return {
             title: booking.booker.firstname + ' ' + booking.booker.lastname,
             start: new Date(booking.start),
@@ -94,6 +94,5 @@ export class CalendarComponent implements OnInit {
         });
       })
     );
-    this.events$.subscribe(ev => { console.debug(ev) })
   }
 }

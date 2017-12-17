@@ -1,0 +1,32 @@
+<h1>
+  {{titre}} Les utilisateurs :
+</h1>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Prénom</th>
+      <th>Nom</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Réservations</th>
+      <th>Couleur</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of users">
+      <td>{{user.firstname | capitalize}}</td>
+      <td>{{user.lastname | capitalize}}</td>
+      <td>{{user.email}}</td>
+      <td>
+        <div class="row">
+          <div class="col">{{user.role | lowercase}}</div>
+          <div class="col">
+            <figure class="circle" [style.background-color]="user.role=='ADMIN' ? 'green':'red'"></figure>
+          </div>
+        </div>
+      </td>
+      <td>{{user.bookings.length}}</td>
+      <td [style.background-color]="user.color"></td>
+    </tr>
+  </tbody>
+</table>

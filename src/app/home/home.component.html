@@ -1,19 +1,21 @@
 <div class="row justify-content-center">
-  <ul class="nav">
-    <li class="nav-item">
-      <a class="nav-link active" [routerLink]="['profil/']">Mon profil</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" [routerLink]="['calendar/']">Calendrier</a>
-    </li>
-  </ul>
+  <nav class="navbar navbar-light bg-light">
+    <a class="nav-link active" [routerLink]="['profil/']">Mon profil</a>
+    <a class="nav-link" [routerLink]="['calendar/']">Calendrier</a>
+    <a class="nav-link" [routerLink]="['admin/']">Administration</a>
+    <a class="btn btn-danger" (click)="logout()">Déconnexion</a>
+  </nav>
 </div>
-<router-outlet></router-outlet>
+
+<div class="container-fluid">
+  <router-outlet></router-outlet>
+</div>
+
 <footer class="footer">
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <span class="text-muted text-xs-center">&copy; la Perette {{date}}.</span>
+        <span class="text-muted text-xs-center">&copy; La Perette {{date}}.</span>
       </div>
     </div>
   </div>

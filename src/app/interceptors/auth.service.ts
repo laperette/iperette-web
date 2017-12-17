@@ -9,14 +9,14 @@ export class AuthInterceptor implements HttpInterceptor {
   }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     console.debug("interceptig a request", req)
-    if (req.url.indexOf("login") > 0) {
-      return next.handle(req);
+    let token = localStorage.getItem('token');
+    if (token) {
+      req = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      });
     }
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    });
     return next.handle(req);
   }
 }
