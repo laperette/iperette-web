@@ -20,5 +20,4 @@ export class AdminComponent implements OnInit {
       console.error(err)
     })
   }
-
 }

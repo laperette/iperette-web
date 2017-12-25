@@ -1,8 +1,7 @@
 import { Component, Injectable, OnInit } from '@angular/core';
-import { NgbDateStruct, NgbCalendar, NgbDatepickerI18n } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct, NgbCalendar, NgbDatepickerI18n, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { DatepickerI18nService, I18n } from './datepicker-i18n.service';
 import { BookingService } from '../booking.service';
-import { constructDependencies } from '@angular/core/src/di/reflective_provider';
 
 const equals = (one: NgbDateStruct, two: NgbDateStruct) =>
   one && two && two.year === one.year && two.month === one.month && two.day === one.day;
@@ -19,7 +18,7 @@ const after = (one: NgbDateStruct, two: NgbDateStruct) =>
   selector: 'app-booking-form',
   templateUrl: './booking-form.component.html',
   styleUrls: ['./booking-form.component.css'],
-  providers: [I18n, { provide: NgbDatepickerI18n, useClass: DatepickerI18nService }]
+  providers: [I18n, NgbDatepickerConfig, { provide: NgbDatepickerI18n, useClass: DatepickerI18nService }]
 })
 export class BookingFormComponent implements OnInit {
   model;
@@ -29,9 +28,11 @@ export class BookingFormComponent implements OnInit {
   toDate: NgbDateStruct;
   numOfParticipants: number;
 
-  constructor(private calendar: NgbCalendar, private bookingSvc: BookingService) {
+  constructor(private calendar: NgbCalendar, private bookingSvc: BookingService, config: NgbDatepickerConfig) {
     this.fromDate = this.calendar.getToday();
-    this.toDate = this.calendar.getNext(calendar.getToday(), 'd', 10);
+    this.toDate = this.fromDate;//this.calendar.getNext(calendar.getToday(), 'd', 10);
+    // days that don't belong to current month are not visible
+    config.outsideDays = 'hidden';
   }
 
   ngOnInit() {
@@ -58,19 +59,15 @@ export class BookingFormComponent implements OnInit {
       end: this.toNativeDate(this.toDate),
       numOfParticipants: this.numOfParticipants
     }
-    console.debug("booking : ", booking)
-    this.bookingSvc.createBooking(booking).subscribe(
-      resp => {
-        console.debug(resp)
-      }, err => {
-        console.error("error creating booking", err)
-      }
-    )
+    this.bookingSvc.createBooking(booking).subscribe(resp => {
+      console.debug(resp)
+    })
   }
 
   isHovered = date => this.fromDate && !this.toDate && this.hoveredDate && after(date, this.fromDate) && before(date, this.hoveredDate);
   isInside = date => after(date, this.fromDate) && before(date, this.toDate);
   isFrom = date => equals(date, this.fromDate);
   isTo = date => equals(date, this.toDate);
-
+  isBeforeToday = date => before(date, this.calendar.getToday());
+  isBooked = date => this.bookingSvc.isAlreadyBooked(this.toNativeDate(date));
 }

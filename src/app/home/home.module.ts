@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { AdminComponent } from './admin/admin.component';
 import { RoleGuard } from './role.guard';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
+import { AlertModule } from '../alerts/alert.module';
 
 const homeRoutes: Routes = [
   {
@@ -35,7 +36,8 @@ const homeRoutes: Routes = [
     FormsModule,
     CalendarModule.forRoot(),
     RouterModule.forChild(homeRoutes),
-    NgbModule
+    NgbModule,
+    AlertModule
   ],
   declarations: [ProfileComponent, HomeComponent, CalendarComponent, BookingFormComponent, AdminComponent, CapitalizePipe],
   providers: [BookingService, RoleGuard]

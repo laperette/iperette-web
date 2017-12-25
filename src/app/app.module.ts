@@ -11,8 +11,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { AuthInterceptor } from './interceptors/auth.service';
-
-
+import { AlertModule } from './alerts/alert.module';
 
 const appRoutes: Routes = [
   { path: 'login', loadChildren: 'app/login/login.module#LoginModule' },
@@ -32,7 +31,8 @@ const appRoutes: Routes = [
       appRoutes,
       { enableTracing: false } // <-- debugging purposes only
     ),
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    AlertModule.forRoot()
   ],
   providers: [
     AuthService,

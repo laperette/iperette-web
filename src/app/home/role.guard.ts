@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { AuthService } from '../auth.service';
-import decode from 'jwt-decode';
-
+import * as decode from 'jwt-decode';
 
 @Injectable()
 export class RoleGuard implements CanActivate {

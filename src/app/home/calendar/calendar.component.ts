@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation } from '@
 import { Observable } from 'rxjs/Observable'
 import { map } from 'rxjs/operators/map';
 import { BookingService } from '../booking.service'
+import { Booking } from '../../models/Booking';
 
 import {
   startOfDay,
@@ -52,7 +53,7 @@ export class CalendarComponent implements OnInit {
   weekStartsOn: number = DAYS_OF_WEEK.MONDAY;
   weekendDays: number[] = [DAYS_OF_WEEK.SATURDAY, DAYS_OF_WEEK.SUNDAY];
   viewDate: Date = new Date();
-  events$: Observable<Array<CalendarEvent<any>>>;
+  events$: Observable<CalendarEvent<Booking>[]>;
 
   handleEvent(action: string, event: CalendarEvent): void { }
   activeDayIsOpen: boolean = false;
@@ -80,19 +81,29 @@ export class CalendarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.events$ = this.bookingService.getAllBookings().map(res => res.bookings).pipe(
+    this.events$ = this.bookingService.getAllBookings().pipe(
       map(bookings => {
         return bookings.map(booking => {
-          //console.debug("booking : ", booking)
           return {
-            title: booking.booker.firstname + ' ' + booking.booker.lastname,
+            title: this.bookingTitle(booking),
             start: new Date(booking.start),
             end: new Date(booking.end),
-            color: { primary: booking.booker.color },
-            meta: { booking }
+            color: { primary: booking.booker.color, secondary: booking.booker.color },
+            meta: booking
           }
         });
       })
     );
+  }
+  private bookingTitle(booking) {
+    let title = this.capitalizeFirstLetter(booking.booker.firstname) + ' ' + this.capitalizeFirstLetter(booking.booker.lastname);
+    let start = new Date(booking.start).toLocaleDateString();
+    let end = new Date(booking.end).toLocaleDateString();
+    title += ' - ' + booking.numOfParticipants + ' invités';
+    title += ' - Du ' + start + ' au ' + end;
+    return title;
+  }
+  private capitalizeFirstLetter(string) {
+    return string[0].toUpperCase() + string.slice(1);
   }
 }
