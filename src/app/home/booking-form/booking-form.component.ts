@@ -1,7 +1,8 @@
-import { Component, Injectable, OnInit } from '@angular/core';
-import { NgbDateStruct, NgbCalendar, NgbDatepickerI18n, NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Injectable, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { NgbDateStruct, NgbCalendar, NgbDatepickerI18n, NgbDatepickerConfig, NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
 import { DatepickerI18nService, I18n } from './datepicker-i18n.service';
 import { BookingService } from '../booking.service';
+import { NgbDateStructHelperService } from './ngb-date-struct-helper.service';
 
 const equals = (one: NgbDateStruct, two: NgbDateStruct) =>
   one && two && two.year === one.year && two.month === one.month && two.day === one.day;
@@ -18,56 +19,38 @@ const after = (one: NgbDateStruct, two: NgbDateStruct) =>
   selector: 'app-booking-form',
   templateUrl: './booking-form.component.html',
   styleUrls: ['./booking-form.component.css'],
-  providers: [I18n, NgbDatepickerConfig, { provide: NgbDatepickerI18n, useClass: DatepickerI18nService }]
+  providers: [
+    I18n,
+    NgbDatepickerConfig,
+    { provide: NgbDatepickerI18n, useClass: DatepickerI18nService },
+    NgbDateStructHelperService
+  ]
 })
 export class BookingFormComponent implements OnInit {
-  model;
+  @Input() startDate: Date;
+  @Output() endDate: EventEmitter<Date> = new EventEmitter<Date>();
   hoveredDate: NgbDateStruct;
+  date: NgbDateStruct;
+  minDate: NgbDateStruct;
 
-  fromDate: NgbDateStruct;
-  toDate: NgbDateStruct;
-  numOfParticipants: number;
-
-  constructor(private calendar: NgbCalendar, private bookingSvc: BookingService, config: NgbDatepickerConfig) {
-    this.fromDate = this.calendar.getToday();
-    this.toDate = this.fromDate;//this.calendar.getNext(calendar.getToday(), 'd', 10);
-    // days that don't belong to current month are not visible
+  constructor(
+    private calendar: NgbCalendar,
+    private bookingSvc: BookingService,
+    config: NgbDatepickerConfig,
+    private ngbDateHelper: NgbDateStructHelperService
+  ) {
     config.outsideDays = 'hidden';
   }
 
   ngOnInit() {
-  }
-
-  toNativeDate(date: NgbDateStruct): Date {
-    return date ? new Date(Date.UTC(date.year, date.month - 1, date.day)) : null;
+    this.date = this.ngbDateHelper.fromNativeDate(this.startDate);
+    this.minDate = this.date;
   }
 
   onDateChange(date: NgbDateStruct) {
-    if (!this.fromDate && !this.toDate) {
-      this.fromDate = date;
-    } else if (this.fromDate && !this.toDate && after(date, this.fromDate)) {
-      this.toDate = date;
-    } else {
-      this.toDate = null;
-      this.fromDate = date;
-    }
+    this.endDate.emit(this.ngbDateHelper.toNativeDate(date));
   }
-
-  onSubmit() {
-    let booking = {
-      start: this.toNativeDate(this.fromDate),
-      end: this.toNativeDate(this.toDate),
-      numOfParticipants: this.numOfParticipants
-    }
-    this.bookingSvc.createBooking(booking).subscribe(resp => {
-      console.debug(resp)
-    })
-  }
-
-  isHovered = date => this.fromDate && !this.toDate && this.hoveredDate && after(date, this.fromDate) && before(date, this.hoveredDate);
-  isInside = date => after(date, this.fromDate) && before(date, this.toDate);
-  isFrom = date => equals(date, this.fromDate);
-  isTo = date => equals(date, this.toDate);
+  isHovered = date => equals(date, this.hoveredDate);
   isBeforeToday = date => before(date, this.calendar.getToday());
-  isBooked = date => this.bookingSvc.isAlreadyBooked(this.toNativeDate(date));
+  isBooked = date => this.bookingSvc.isAlreadyBooked(this.ngbDateHelper.toNativeDate(date));
 }

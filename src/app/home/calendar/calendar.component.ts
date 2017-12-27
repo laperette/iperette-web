@@ -1,9 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation, ViewChild, TemplateRef } from '@angular/core';
 import { Observable } from 'rxjs/Observable'
 import { map } from 'rxjs/operators/map';
 import { BookingService } from '../booking.service'
 import { Booking } from '../../models/Booking';
-
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ClickedDayModalContent } from './clicked-day-modal-content.component';
 import {
   startOfDay,
   endOfDay,
@@ -47,7 +48,7 @@ const colors: any = {
   encapsulation: ViewEncapsulation.None
 })
 export class CalendarComponent implements OnInit {
-  constructor(private bookingService: BookingService) { }
+  constructor(private bookingService: BookingService, private modal: NgbModal) { }
   locale: string = 'fr';
   view: string = 'month';
   weekStartsOn: number = DAYS_OF_WEEK.MONDAY;
@@ -55,29 +56,10 @@ export class CalendarComponent implements OnInit {
   viewDate: Date = new Date();
   events$: Observable<CalendarEvent<Booking>[]>;
 
-  handleEvent(action: string, event: CalendarEvent): void { }
-  activeDayIsOpen: boolean = false;
-
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
-    if (isSameMonth(date, this.viewDate)) {
-      if (
-        (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
-        events.length === 0
-      ) {
-        this.activeDayIsOpen = false;
-      } else {
-        this.activeDayIsOpen = true;
-        this.viewDate = date;
-      }
-    }
-  }
-
-  beforeMonthViewRender({ body }: { body: CalendarMonthViewDay[] }): void {
-    body.forEach(day => {
-      day.badgeTotal = day.events.filter(
-        event => event.meta.incrementsBadgeTotal
-      ).length;
-    });
+    let modalRef = this.modal.open(ClickedDayModalContent, { size: 'lg' });
+    modalRef.componentInstance.startDate = date;
+    modalRef.componentInstance.events = events;
   }
 
   ngOnInit() {
@@ -95,12 +77,13 @@ export class CalendarComponent implements OnInit {
       })
     );
   }
+
   private bookingTitle(booking) {
     let title = this.capitalizeFirstLetter(booking.booker.firstname) + ' ' + this.capitalizeFirstLetter(booking.booker.lastname);
     let start = new Date(booking.start).toLocaleDateString();
     let end = new Date(booking.end).toLocaleDateString();
-    title += ' - ' + booking.numOfParticipants + ' invités';
-    title += ' - Du ' + start + ' au ' + end;
+    title += ' (' + booking.numOfParticipants + ')';
+    title += ', du ' + start + ' au ' + end;
     return title;
   }
   private capitalizeFirstLetter(string) {

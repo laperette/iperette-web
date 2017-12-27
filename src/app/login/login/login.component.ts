@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User, UserSignin, UserSignup, UserSignedIn } from '../../models/User';
 import { LoginService } from '../login.service';
 import { AuthService } from '../../auth.service';
-import { AlertService } from '../../alerts/alert.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +11,7 @@ import { AlertService } from '../../alerts/alert.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private alertSvc: AlertService, private fb: FormBuilder, private loginSvc: LoginService, private authSvc: AuthService) {
+  constructor(private fb: FormBuilder, private loginSvc: LoginService, private authSvc: AuthService) {
     this.user = new User();
   }
   user: User
@@ -66,7 +65,6 @@ export class LoginComponent implements OnInit {
       this.loginSvc.signin(user).subscribe((res: UserSignedIn) => {
         this.authSvc.login(res)
       }, err => {
-        this.alertSvc.error(err.error, false);
         console.error(err.error)
       })
     } else {
@@ -80,7 +78,6 @@ export class LoginComponent implements OnInit {
       this.loginSvc.signup(user).subscribe((res: UserSignedIn) => {
         this.authSvc.login(res)
       }, err => {
-        this.alertSvc.error(err.error, false);
         console.error(err.error)
       })
     }

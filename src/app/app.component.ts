@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
-import { AlertService } from './alerts/alert.service';
+import { ToasterConfig } from 'angular5-toaster';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +9,15 @@ import { AlertService } from './alerts/alert.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'iPerrette';
+
+  public title = 'iPerrette';
+  public toasterconfig: ToasterConfig =
+    new ToasterConfig({
+      showCloseButton: false,
+      tapToDismiss: true,
+      timeout: 5000
+    });
+
   constructor(private authSvc: AuthService, private router: Router) {
     /** redirection logic */
     if (this.authSvc.isLoggedIn()) {
@@ -18,4 +26,5 @@ export class AppComponent {
       this.router.navigate(['/login']);
     }
   }
+
 }

@@ -1,1 +1,9 @@
 @import "~angular-calendar/css/angular-calendar.css";
+hr.event-line {
+    border: 0;
+    height: 6px;
+    width: 80%;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5em;
+}

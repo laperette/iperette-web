@@ -1,7 +1,8 @@
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToasterModule, ToasterService } from 'angular5-toaster';
 
-import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
@@ -11,7 +12,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { AuthInterceptor } from './interceptors/auth.service';
-import { AlertModule } from './alerts/alert.module';
 
 const appRoutes: Routes = [
   { path: 'login', loadChildren: 'app/login/login.module#LoginModule' },
@@ -32,7 +32,7 @@ const appRoutes: Routes = [
       { enableTracing: false } // <-- debugging purposes only
     ),
     NgbModule.forRoot(),
-    AlertModule.forRoot()
+    ToasterModule
   ],
   providers: [
     AuthService,
@@ -41,7 +41,7 @@ const appRoutes: Routes = [
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }],
+    }, ToasterService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

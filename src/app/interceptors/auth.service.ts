@@ -3,11 +3,11 @@ import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/do';
-import { AlertService } from '../alerts/alert.service';
+import { ToasterService } from 'angular5-toaster';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private alertSvc: AlertService) { }
+  constructor(private toasterService: ToasterService) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     console.debug('interceptig a request', req)
     let token = localStorage.getItem('token');
@@ -27,7 +27,7 @@ export class AuthInterceptor implements HttpInterceptor {
       .catch(response => {
         if (response instanceof HttpErrorResponse) {
           console.log('Processing http error', response);
-          this.alertSvc.error(response.error);
+          this.toasterService.pop('error', 'Error de requête', response.error);
         }
         return Observable.throw(response);
       });;

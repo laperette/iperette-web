@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { AdminComponent } from './admin/admin.component';
 import { RoleGuard } from './role.guard';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
-import { AlertModule } from '../alerts/alert.module';
+import { ClickedDayModalContent } from './calendar/clicked-day-modal-content.component';
 
 const homeRoutes: Routes = [
   {
@@ -36,10 +36,10 @@ const homeRoutes: Routes = [
     FormsModule,
     CalendarModule.forRoot(),
     RouterModule.forChild(homeRoutes),
-    NgbModule,
-    AlertModule
+    NgbModule
   ],
-  declarations: [ProfileComponent, HomeComponent, CalendarComponent, BookingFormComponent, AdminComponent, CapitalizePipe],
+  entryComponents: [ClickedDayModalContent],
+  declarations: [ClickedDayModalContent, ProfileComponent, HomeComponent, CalendarComponent, BookingFormComponent, AdminComponent, CapitalizePipe],
   providers: [BookingService, RoleGuard]
 })
 export class HomeModule { }

@@ -5,7 +5,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginService } from './login.service';
-import { AlertModule } from '../alerts/alert.module';
 
 const loginRoutes: Routes = [
   { path: '', component: LoginComponent }
@@ -15,8 +14,7 @@ const loginRoutes: Routes = [
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule.forChild(loginRoutes),
-    AlertModule
+    RouterModule.forChild(loginRoutes)
   ],
   providers: [LoginService],
   declarations: [LoginComponent]
