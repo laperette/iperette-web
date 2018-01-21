@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { User } from '../../models/User';
+import { Booking } from '../../models/Booking';
 
 @Component({
   selector: 'app-admin',
@@ -10,14 +12,22 @@ import { environment } from '../../../environments/environment';
 export class AdminComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
-  users = [];
+  users: User[] = [];
+  bookings: Booking[] = [];
 
   ngOnInit() {
-    const url = environment.apiUrl + '/users';
-    this.http.get(url).subscribe(
+    const url = environment.apiUrl;
+    this.http.get<User[]>(url + '/users').subscribe(
       (res: any) => {
         this.users = res;
-        console.log(res);
+      },
+      err => {
+        console.error(err);
+      }
+    );
+    this.http.get<Booking[]>(url + '/bookings').subscribe(
+      resa => {
+        this.bookings = resa;
       },
       err => {
         console.error(err);

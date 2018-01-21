@@ -2,7 +2,7 @@
   <div class="btn-grorup" role="group">
     <a class="btn btn-outline-primary" [routerLink]="'profil'" routerLinkActive="active">Mon profil</a>
     <a class="btn btn-outline-primary" [routerLink]="'calendar'" routerLinkActive="active">Calendrier</a>
-    <a class="btn btn-outline-primary" [routerLink]="'admin'" routerLinkActive="active">Administration</a>
+    <a *ngIf="admin" class="btn btn-outline-primary" [routerLink]="'admin'" routerLinkActive="active">Administration</a>
     <a class="btn btn-outline-danger" (click)="logout()" routerLinkActive="active">Déconnexion</a>
   </div>
 </nav>

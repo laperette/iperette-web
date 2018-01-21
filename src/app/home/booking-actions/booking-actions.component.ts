@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Booking } from '../../models/Booking';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-booking-actions',
@@ -8,10 +9,15 @@ import { Booking } from '../../models/Booking';
 })
 export class BookingActionsComponent implements OnInit {
   @Input() booking: Booking;
-  constructor() {}
+  @Input() full: boolean;
+  constructor(private modalService: NgbModal) {}
 
   ngOnInit() {}
 
   annuler() {}
   modifier() {}
+
+  open(content) {
+    this.modalService.open(content);
+  }
 }

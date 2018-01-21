@@ -8,6 +8,7 @@ import { Booking } from '../../models/Booking';
 })
 export class BookingListComponent implements OnInit {
   @Input() bookings: Booking[];
+  @Input() full: boolean;
   constructor() {}
   ngOnInit() {}
 }

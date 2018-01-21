@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, Injector, forwardRef } from '@angular/core';
 import {
   HttpEvent,
   HttpInterceptor,
@@ -10,10 +10,14 @@ import {
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class CustomHttpInterceptor implements HttpInterceptor {
-  constructor() {}
+  constructor(
+    @Inject(forwardRef(() => Injector))
+    private injector: Injector
+  ) {}
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
@@ -27,6 +31,9 @@ export class CustomHttpInterceptor implements HttpInterceptor {
       .catch(response => {
         if (response instanceof HttpErrorResponse) {
           console.log('http error', response);
+          if (response.status == 403) {
+            this.injector.get(AuthService).logout();
+          }
         }
         return Observable.throw(response);
       });
