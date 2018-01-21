@@ -4,11 +4,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { LoginComponent } from './login/login.component';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginService } from './login.service';
+import { AuthService } from '../auth.service';
 
-const loginRoutes: Routes = [
-  { path: '', component: LoginComponent }
-]
+const loginRoutes: Routes = [{ path: '', component: LoginComponent }];
 
 @NgModule({
   imports: [
@@ -16,7 +14,7 @@ const loginRoutes: Routes = [
     ReactiveFormsModule,
     RouterModule.forChild(loginRoutes)
   ],
-  providers: [LoginService],
+  providers: [AuthService],
   declarations: [LoginComponent]
 })
-export class LoginModule { }
+export class LoginModule {}

@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { BookingService } from '../booking.service';
+import { Booking } from '../../models/Booking';
 @Component({
   selector: 'ngbd-modal-content',
   template: `
@@ -45,19 +46,24 @@ export class ClickedDayModalContent {
   }
 
   onSubmit() {
-    let booking = {
-      start: this.startDate,
-      end: this.endDate,
-      numOfParticipants: this.numOfParticipants
-    };
+    const booking = new Booking();
+    booking.startDate = this.startDate;
+    booking.endDate = this.endDate;
+    booking.nbOfGuests = this.numOfParticipants;
     this.loading = true;
-    this.bookingSvc.createBooking(booking).subscribe(resp => {
-      this.loading = false;
-      this.activeModal.close();
-    }, err => {
-      this.loading = false;
-    })
+    this.bookingSvc.createBooking(booking).subscribe(
+      resp => {
+        this.loading = false;
+        this.activeModal.close();
+      },
+      err => {
+        this.loading = false;
+      }
+    );
   }
 
-  constructor(public activeModal: NgbActiveModal, private bookingSvc: BookingService) { }
+  constructor(
+    public activeModal: NgbActiveModal,
+    private bookingSvc: BookingService
+  ) {}
 }

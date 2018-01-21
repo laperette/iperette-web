@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-admin',
@@ -7,17 +8,20 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  users = []
+  users = [];
 
   ngOnInit() {
-    this.http.get('http://localhost:3000/users/').subscribe((res: any) => {
-      this.users = res;
-      console.log(res)
-    }, err => {
-      console.error(err)
-    })
+    const url = environment.apiUrl + '/users';
+    this.http.get(url).subscribe(
+      (res: any) => {
+        this.users = res;
+        console.log(res);
+      },
+      err => {
+        console.error(err);
+      }
+    );
   }
 }

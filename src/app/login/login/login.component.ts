@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User, UserSignin, UserSignup, UserSignedIn } from '../../models/User';
-import { LoginService } from '../login.service';
 import { AuthService } from '../../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -10,11 +10,14 @@ import { AuthService } from '../../auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
-  constructor(private fb: FormBuilder, private loginSvc: LoginService, private authSvc: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private authSvc: AuthService,
+    private router: Router
+  ) {
     this.user = new User();
   }
-  user: User
+  user: User;
   link = {
     signText: 'Pas encore inscrit ?',
     linkText: "S'inscrire",
@@ -24,23 +27,23 @@ export class LoginComponent implements OnInit {
       email: ['', Validators.email],
       password: ['', Validators.required]
     })
-  }
+  };
 
   changeLink(event) {
-    event.preventDefault()
-    this.link.signin = !this.link.signin
+    event.preventDefault();
+    this.link.signin = !this.link.signin;
     if (this.link.signin) {
-      this.link.signText = 'Pas encore inscrit ?'
-      this.link.linkText = "S'inscrire"
-      this.link.title = 'Connexion'
+      this.link.signText = 'Pas encore inscrit ?';
+      this.link.linkText = "S'inscrire";
+      this.link.title = 'Connexion';
       this.link.signForm = this.fb.group({
         email: ['', [Validators.required, Validators.email]],
         password: ['', Validators.required]
       });
     } else {
-      this.link.signText = 'Déjà inscrit ?'
-      this.link.linkText = 'Se connecter'
-      this.link.title = 'Inscription'
+      this.link.signText = 'Déjà inscrit ?';
+      this.link.linkText = 'Se connecter';
+      this.link.title = 'Inscription';
       this.link.signForm = this.fb.group({
         firstname: ['', Validators.required],
         lastname: ['', Validators.required],
@@ -56,35 +59,51 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     const formModel = this.link.signForm.value;
-    console.log(formModel)
+    console.log(formModel);
     if (this.link.signin) {
-      let user: UserSignin = {
+      const user: UserSignin = {
         email: formModel.email as string,
         password: formModel.password as string
       };
-      this.loginSvc.signin(user).subscribe((res: UserSignedIn) => {
-        this.authSvc.login(res)
-      }, err => {
-        console.error(err.error)
-      })
+      this.authSvc.signin(user).subscribe(
+        done => {
+          if (done) {
+            this.router.navigateByUrl('/home');
+          } else {
+            // display error msg
+          }
+        },
+        err => {
+          // display error msg
+          console.error(err.error);
+        }
+      );
     } else {
-      let user: UserSignup = {
+      const user: UserSignup = {
         firstname: formModel.firstname as string,
         lastname: formModel.lastname as string,
         email: formModel.email as string,
         password: formModel.password as string,
         phone: formModel.phone as string
-      }
-      this.loginSvc.signup(user).subscribe((res: UserSignedIn) => {
-        this.authSvc.login(res)
-      }, err => {
-        console.error(err.error)
-      })
+      };
+      this.authSvc.signup(user).subscribe(
+        done => {
+          if (done) {
+            this.router.navigateByUrl('/home');
+          } else {
+            // display error msg
+          }
+        },
+        err => {
+          // display error msg
+          console.error(err.error);
+        }
+      );
     }
   }
-  get diagnostic() { return JSON.stringify(this.model); }
-
-  ngOnInit() {
+  get diagnostic() {
+    return JSON.stringify(this.model);
   }
 
+  ngOnInit() {}
 }

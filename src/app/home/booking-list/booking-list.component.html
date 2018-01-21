@@ -1,0 +1,22 @@
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">Début</th>
+      <th scope="col">Fin</th>
+      <th scope="col">Invités</th>
+      <th scope="col">status</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let booking of bookings">
+      <th>{{booking.startDate}}</th>
+      <th>{{booking.endDate}}</th>
+      <th>{{booking.nbOfGuests}}</th>
+      <th>{{booking.id}}</th>
+      <th>
+        <app-booking-actions [booking]="booking"></app-booking-actions>
+      </th>
+    </tr>
+  </tbody>
+</table>

@@ -1,21 +1,11 @@
-<div class="row justify-content-center">
-  <nav class="navbar navbar-light bg-light">
-    <a class="nav-link active" [routerLink]="['profil/']">Mon profil</a>
-    <a class="nav-link" [routerLink]="['calendar/']">Calendrier</a>
-    <a class="nav-link" [routerLink]="['admin/']">Administration</a>
-    <a class="btn btn-danger" (click)="logout()">Déconnexion</a>
-  </nav>
-</div>
+<nav class="navbar navbar-light bg-light justify-content-center">
+  <div class="btn-grorup" role="group">
+    <a class="btn btn-outline-primary" [routerLink]="'profil'" routerLinkActive="active">Mon profil</a>
+    <a class="btn btn-outline-primary" [routerLink]="'calendar'" routerLinkActive="active">Calendrier</a>
+    <a class="btn btn-outline-primary" [routerLink]="'admin'" routerLinkActive="active">Administration</a>
+    <a class="btn btn-outline-danger" (click)="logout()" routerLinkActive="active">Déconnexion</a>
+  </div>
+</nav>
 <div class="container-fluid">
   <router-outlet></router-outlet>
 </div>
-
-<footer class="footer">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <span class="text-muted text-xs-center">&copy; La Perette {{date}}.</span>
-      </div>
-    </div>
-  </div>
-</footer>

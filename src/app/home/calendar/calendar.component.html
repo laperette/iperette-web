@@ -3,9 +3,9 @@
     <div class="col">
       <div class="row">
         <div class="col-md">
-          <button type="button" class="btn btn-primary" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="activeDayIsOpen = false">Précedent</button>
-          <button type="button" class="btn btn-primary" mwlCalendarToday [(viewDate)]="viewDate">Aujourd'hui</button>
-          <button type="button" class="btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="activeDayIsOpen = false">Suivant</button>
+          <button type="button" class="btn btn-primary btn-sm" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="activeDayIsOpen = false">Précedent</button>
+          <button type="button" class="btn btn-primary btn-sm" mwlCalendarToday [(viewDate)]="viewDate">Aujourd'hui</button>
+          <button type="button" class="btn btn-primary btn-sm" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="activeDayIsOpen = false">Suivant</button>
         </div>
         <div class="col-md">
           <h2>{{ viewDate | calendarDate:(view + 'ViewTitle'):locale }}</h2>
