@@ -1,56 +1,59 @@
-import { Component, Injectable, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { NgbDateStruct, NgbCalendar, NgbDatepickerI18n, NgbDatepickerConfig, NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
-import { DatepickerI18nService, I18n } from './datepicker-i18n.service';
+import {
+  Component,
+  Injectable,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { BookingService } from '../booking.service';
-import { NgbDateStructHelperService } from './ngb-date-struct-helper.service';
-
-const equals = (one: NgbDateStruct, two: NgbDateStruct) =>
-  one && two && two.year === one.year && two.month === one.month && two.day === one.day;
-
-const before = (one: NgbDateStruct, two: NgbDateStruct) =>
-  !one || !two ? false : one.year === two.year ? one.month === two.month ? one.day === two.day
-    ? false : one.day < two.day : one.month < two.month : one.year < two.year;
-
-const after = (one: NgbDateStruct, two: NgbDateStruct) =>
-  !one || !two ? false : one.year === two.year ? one.month === two.month ? one.day === two.day
-    ? false : one.day > two.day : one.month > two.month : one.year > two.year;
+import { Booking } from '../../models/Booking';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-booking-form',
   templateUrl: './booking-form.component.html',
-  styleUrls: ['./booking-form.component.css'],
-  providers: [
-    I18n,
-    NgbDatepickerConfig,
-    { provide: NgbDatepickerI18n, useClass: DatepickerI18nService },
-    NgbDateStructHelperService
-  ]
+  styleUrls: ['./booking-form.component.css']
 })
 export class BookingFormComponent implements OnInit {
-  @Input() startDate: Date;
-  @Output() endDate: EventEmitter<Date> = new EventEmitter<Date>();
-  hoveredDate: NgbDateStruct;
-  date: NgbDateStruct;
-  minDate: NgbDateStruct;
+  @Input() startDate: Date; // populated if it is a new booking
+  @Input() booking: Booking; // populated if it is a modification
+  @Input() full: boolean; // true if we want to display checkbox for the status choice
+
+  @Output() newBooking: EventEmitter<Booking> = new EventEmitter<Booking>();
+  @Output() submited: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  bookingForm: FormGroup;
+  minDate = new Date();
 
   constructor(
-    private calendar: NgbCalendar,
     private bookingSvc: BookingService,
-    config: NgbDatepickerConfig,
-    private ngbDateHelper: NgbDateStructHelperService
-  ) {
-    config.outsideDays = 'hidden';
-  }
+    private formBuilder: FormBuilder
+  ) {}
 
   ngOnInit() {
-    this.date = this.ngbDateHelper.fromNativeDate(this.startDate);
-    this.minDate = this.date;
+    if (this.startDate) {
+      this.startDate.setHours(0, 0, 0, 0);
+    }
+    const startDateStr = this.startDate
+      ? this.startDate.toISOString()
+      : this.booking.startDate;
+    const endDateStr = this.booking ? this.booking.endDate : '';
+    const nbOfGuests = this.booking ? this.booking.nbOfGuests : '';
+    const actualStatus = this.booking ? this.booking.status : '';
+    this.bookingForm = this.formBuilder.group({
+      startDate: [startDateStr, [Validators.required]],
+      endDate: [endDateStr, [Validators.required]],
+      nbOfGuests: [nbOfGuests, [Validators.required, Validators.max(20)]],
+      status: [actualStatus, Validators.required]
+    });
+    this.bookingForm.valueChanges.subscribe(changed => {
+      this.newBooking.emit(this.bookingForm.value as Booking);
+    });
   }
 
-  onDateChange(date: NgbDateStruct) {
-    this.endDate.emit(this.ngbDateHelper.toNativeDate(date));
+  submit() {
+    this.newBooking.emit(this.bookingForm.value as Booking);
+    this.submited.emit(true);
   }
-  isHovered = date => equals(date, this.hoveredDate);
-  isBeforeToday = date => before(date, this.calendar.getToday());
-  isBooked = date => this.bookingSvc.isAlreadyBooked(this.ngbDateHelper.toNativeDate(date));
 }

@@ -11,7 +11,7 @@ import { map } from 'rxjs/operators/map';
 import { BookingService } from '../booking.service';
 import { Booking } from '../../models/Booking';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ClickedDayModalContent } from './clicked-day-modal-content.component';
+import { ClickedDayModalContentComponent } from './clicked-day-modal-content.component';
 import {
   startOfDay,
   endOfDay,
@@ -58,15 +58,17 @@ export class CalendarComponent implements OnInit {
     private bookingService: BookingService,
     private modal: NgbModal
   ) {}
-  locale: string = 'fr';
-  view: string = 'month';
+  locale = 'fr';
+  view = 'month';
   weekStartsOn: number = DAYS_OF_WEEK.MONDAY;
   weekendDays: number[] = [DAYS_OF_WEEK.SATURDAY, DAYS_OF_WEEK.SUNDAY];
   viewDate: Date = new Date();
   events$: Observable<CalendarEvent<Booking>[]>;
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
-    let modalRef = this.modal.open(ClickedDayModalContent, { size: 'lg' });
+    const modalRef = this.modal.open(ClickedDayModalContentComponent, {
+      size: 'lg'
+    });
     modalRef.componentInstance.startDate = date;
     modalRef.componentInstance.events = events;
   }

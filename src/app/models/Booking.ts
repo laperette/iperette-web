@@ -4,6 +4,7 @@ export class Booking {
   endDate: Date;
   nbOfGuests: Number;
   pending: boolean;
+  status: string;
   startDate: Date;
   updatedAt: Date;
   _id: string;

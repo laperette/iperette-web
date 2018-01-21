@@ -20,16 +20,16 @@
 
 <ng-template #modifierAction let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title">Etes vous sûr d'annuler cette réservation ? </h4>
+    <h4 class="modal-title">Modification d'une réservation</h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-    <p>Cette action est irréversible&hellip;</p>
+    <app-booking-form [booking]="booking" [full]="full"></app-booking-form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Oui, j'annule ma réservation</button>
-    <button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Oula, non surtout pas !</button>
+    <button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Sauvegarder</button>
+    <button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Annuler la modification</button>
   </div>
 </ng-template>
