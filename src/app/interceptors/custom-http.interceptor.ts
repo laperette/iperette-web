@@ -7,9 +7,11 @@ import {
   HttpErrorResponse,
   HttpResponse
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/observable/throw';
 import { AuthService } from '../auth.service';
 
 @Injectable()
@@ -22,7 +24,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    console.debug('http request', req);
+    console.log('http request', req);
     return next
       .handle(req)
       .do(ev => {
@@ -31,7 +33,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
       .catch(response => {
         if (response instanceof HttpErrorResponse) {
           console.log('http error', response);
-          if (response.status == 403) {
+          if (response.status === 403) {
             this.injector.get(AuthService).logout();
           }
         }

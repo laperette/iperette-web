@@ -54,7 +54,7 @@ export class AuthService {
   }
 
   signup(user: UserSignup): Observable<boolean> {
-    let url = environment.apiUrl + '/users/sign-up';
+    const url = environment.apiUrl + '/users/sign-up';
     return this.http.post<any>(url, user).map(resp => {
       if (resp && resp.token) {
         localStorage.setItem('token', resp.token);

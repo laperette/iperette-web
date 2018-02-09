@@ -11,7 +11,7 @@ export class HomeComponent implements OnInit {
   date = new Date().getFullYear();
   admin = false;
   ngOnInit() {
-    this.admin = this.authService.userRole == 'ADMIN';
+    this.admin = this.authService.userRole === 'ADMIN';
   }
 
   logout() {

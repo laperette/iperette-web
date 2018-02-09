@@ -2,7 +2,7 @@ export class Booking {
   booker: Booker;
   createdAt: Date;
   endDate: Date;
-  nbOfGuests: Number;
+  nbOfGuests: number;
   pending: boolean;
   status: string;
   startDate: Date;
