@@ -1,10 +1,17 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation, ViewChild, TemplateRef } from '@angular/core';
-import { Observable } from 'rxjs/Observable'
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+  ViewChild,
+  TemplateRef
+} from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators/map';
-import { BookingService } from '../booking.service'
+import { BookingService } from '../booking.service';
 import { Booking } from '../../models/Booking';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ClickedDayModalContent } from './clicked-day-modal-content.component';
+import { ClickedDayModalContentComponent } from './clicked-day-modal-content.component';
 import {
   startOfDay,
   endOfDay,
@@ -23,7 +30,6 @@ import {
   CalendarMonthViewDay,
   DAYS_OF_WEEK
 } from 'angular-calendar';
-
 
 const colors: any = {
   red: {
@@ -48,16 +54,21 @@ const colors: any = {
   encapsulation: ViewEncapsulation.None
 })
 export class CalendarComponent implements OnInit {
-  constructor(private bookingService: BookingService, private modal: NgbModal) { }
-  locale: string = 'fr';
-  view: string = 'month';
+  constructor(
+    private bookingService: BookingService,
+    private modal: NgbModal
+  ) {}
+  locale = 'fr';
+  view = 'month';
   weekStartsOn: number = DAYS_OF_WEEK.MONDAY;
   weekendDays: number[] = [DAYS_OF_WEEK.SATURDAY, DAYS_OF_WEEK.SUNDAY];
   viewDate: Date = new Date();
   events$: Observable<CalendarEvent<Booking>[]>;
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
-    let modalRef = this.modal.open(ClickedDayModalContent, { size: 'lg' });
+    const modalRef = this.modal.open(ClickedDayModalContentComponent, {
+      size: 'lg'
+    });
     modalRef.componentInstance.startDate = date;
     modalRef.componentInstance.events = events;
   }
@@ -68,22 +79,27 @@ export class CalendarComponent implements OnInit {
         return bookings.map(booking => {
           return {
             title: this.bookingTitle(booking),
-            start: new Date(booking.start),
-            end: new Date(booking.end),
-            color: { primary: booking.booker.color, secondary: booking.booker.color },
+            start: new Date(booking.startDate),
+            end: new Date(booking.endDate),
+            color: {
+              primary: booking.booker.color,
+              secondary: booking.booker.color
+            },
             meta: booking
-          }
+          };
         });
       })
     );
   }
 
-  private bookingTitle(booking) {
-    let title = this.capitalizeFirstLetter(booking.booker.firstname) + ' ' + this.capitalizeFirstLetter(booking.booker.lastname);
-    let start = new Date(booking.start).toLocaleDateString();
-    let end = new Date(booking.end).toLocaleDateString();
-    title += ' (' + booking.numOfParticipants + ')';
-    title += ', du ' + start + ' au ' + end;
+  private bookingTitle(booking: Booking): string {
+    const start = new Date(booking.startDate).toLocaleDateString();
+    const end = new Date(booking.endDate).toLocaleDateString();
+    const title = `${this.capitalizeFirstLetter(
+      booking.booker.firstname
+    )} ${this.capitalizeFirstLetter(
+      booking.booker.lastname
+    )}, du ${start} au ${end} (${booking.nbOfGuests} invités).`;
     return title;
   }
   private capitalizeFirstLetter(string) {

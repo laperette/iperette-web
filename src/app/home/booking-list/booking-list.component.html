@@ -1,0 +1,24 @@
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th *ngIf="full" scope="col">Auteur</th>
+      <th scope="col">Début</th>
+      <th scope="col">Fin</th>
+      <th scope="col">Invités</th>
+      <th scope="col">status</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let booking of bookings">
+      <th *ngIf="full">{{booking.booker.email}}</th>
+      <th>{{booking.startDate | date:'dd/MM/yyyy'}}</th>
+      <th>{{booking.endDate | date:'dd/MM/yyyy'}}</th>
+      <th>{{booking.nbOfGuests}}</th>
+      <th>{{booking.status}}</th>
+      <th>
+        <app-booking-actions [booking]="booking" [full]="full"></app-booking-actions>
+      </th>
+    </tr>
+  </tbody>
+</table>

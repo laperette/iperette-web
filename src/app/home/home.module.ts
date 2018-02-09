@@ -5,41 +5,58 @@ import { RouterModule, Routes } from '@angular/router';
 import { CalendarModule } from 'angular-calendar';
 import { HomeComponent } from './home.component';
 import { CalendarComponent } from './calendar/calendar.component';
-import { BookingService } from './booking.service'
+import { BookingService } from './booking.service';
 import { BookingFormComponent } from './booking-form/booking-form.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdminComponent } from './admin/admin.component';
 import { RoleGuard } from './role.guard';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
-import { ClickedDayModalContent } from './calendar/clicked-day-modal-content.component';
+import { ClickedDayModalContentComponent } from './calendar/clicked-day-modal-content.component';
+import { BookingListComponent } from './booking-list/booking-list.component';
+import { BookingActionsComponent } from './booking-actions/booking-actions.component';
 
 const homeRoutes: Routes = [
   {
-    path: '', component: HomeComponent, children: [
+    path: '',
+    component: HomeComponent,
+    children: [
       { path: 'profil', component: ProfileComponent },
       { path: 'calendar', component: CalendarComponent },
       {
-        path: 'admin', component: AdminComponent, canActivate: [RoleGuard], data: {
+        path: 'admin',
+        component: AdminComponent,
+        canActivate: [RoleGuard],
+        data: {
           expectedRole: 'ADMIN'
         }
       },
       { path: '', redirectTo: 'calendar', pathMatch: 'full' }
     ]
-  },
-
-]
+  }
+];
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     CalendarModule.forRoot(),
     RouterModule.forChild(homeRoutes),
     NgbModule
   ],
-  entryComponents: [ClickedDayModalContent],
-  declarations: [ClickedDayModalContent, ProfileComponent, HomeComponent, CalendarComponent, BookingFormComponent, AdminComponent, CapitalizePipe],
+  entryComponents: [ClickedDayModalContentComponent],
+  declarations: [
+    ClickedDayModalContentComponent,
+    ProfileComponent,
+    HomeComponent,
+    CalendarComponent,
+    BookingFormComponent,
+    AdminComponent,
+    CapitalizePipe,
+    BookingListComponent,
+    BookingActionsComponent
+  ],
   providers: [BookingService, RoleGuard]
 })
-export class HomeModule { }
+export class HomeModule {}

@@ -1,47 +1,56 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ToasterModule, ToasterService } from 'angular5-toaster';
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
+import { CustomHttpInterceptor } from './interceptors/custom-http.interceptor';
 
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
-import { AuthInterceptor } from './interceptors/auth.service';
+import { JwtModule } from '@auth0/angular-jwt';
 
 const appRoutes: Routes = [
   { path: 'login', loadChildren: 'app/login/login.module#LoginModule' },
-  { path: 'home', loadChildren: 'app/home/home.module#HomeModule', canActivate: [AuthGuard] },
+  {
+    path: 'home',
+    loadChildren: 'app/home/home.module#HomeModule',
+    canActivate: [AuthGuard],
+    canLoad: [AuthGuard]
+  },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
-]
+];
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    RouterModule.forRoot(
-      appRoutes,
-      { enableTracing: false } // <-- debugging purposes only
-    ),
+    RouterModule.forRoot(appRoutes, {
+      enableTracing: false /* <-- debugging purposes only */,
+      useHash: true
+    }),
     NgbModule.forRoot(),
-    ToasterModule
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => localStorage.getItem('token'),
+        whitelistedDomains: ['localhost:8080']
+      }
+    })
   ],
   providers: [
     AuthService,
     AuthGuard,
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
+      useClass: CustomHttpInterceptor,
       multi: true
-    }, ToasterService],
+    }
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

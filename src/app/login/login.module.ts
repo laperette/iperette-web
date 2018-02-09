@@ -1,22 +1,29 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { LoginComponent } from './login/login.component';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginService } from './login.service';
+import { AuthService } from '../auth.service';
+import { SignInComponent } from './sign-in/sign-in.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
+import { SharedModule } from '../shared/shared.module';
 
 const loginRoutes: Routes = [
-  { path: '', component: LoginComponent }
-]
+  { path: '', redirectTo: 'sign-in' },
+  { path: 'sign-in', component: SignInComponent },
+  { path: 'sign-up', component: SignUpComponent }
+];
 
 @NgModule({
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule.forChild(loginRoutes)
+    RouterModule.forChild(loginRoutes),
+    NgbModule,
+    SharedModule
   ],
-  providers: [LoginService],
-  declarations: [LoginComponent]
+  providers: [AuthService],
+  declarations: [SignInComponent, SignUpComponent]
 })
-export class LoginModule { }
+export class LoginModule {}
