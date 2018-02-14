@@ -11,14 +11,14 @@
   </thead>
   <tbody>
     <tr *ngFor="let booking of bookings">
-      <th *ngIf="full">{{booking.booker.email}}</th>
-      <th>{{booking.startDate | date:'dd/MM/yyyy'}}</th>
-      <th>{{booking.endDate | date:'dd/MM/yyyy'}}</th>
-      <th>{{booking.nbOfGuests}}</th>
-      <th>{{booking.status}}</th>
-      <th>
+      <td *ngIf="full">{{booking.booker.email}}</td>
+      <td>{{booking.startDate | date:'dd/MM/yyyy'}}</td>
+      <td>{{booking.endDate | date:'dd/MM/yyyy'}}</td>
+      <td>{{booking.nbOfGuests}}</td>
+      <td>{{booking.status}}</td>
+      <td>
         <app-booking-actions [booking]="booking" [full]="full"></app-booking-actions>
-      </th>
+      </td>
     </tr>
   </tbody>
 </table>

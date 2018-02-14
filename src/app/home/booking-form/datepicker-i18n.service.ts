@@ -1,9 +1,26 @@
 import { Injectable } from '@angular/core';
-import { NgbDatepickerI18n } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbDatepickerI18n,
+  NgbDateAdapter,
+  NgbDateStruct
+} from '@ng-bootstrap/ng-bootstrap';
 const I18N_VALUES = {
-  'fr': {
+  fr: {
     weekdays: ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di'],
-    months: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aou', 'Sep', 'Oct', 'Nov', 'Déc'],
+    months: [
+      'Jan',
+      'Fév',
+      'Mar',
+      'Avr',
+      'Mai',
+      'Juin',
+      'Juil',
+      'Aou',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Déc'
+    ]
   }
   // other languages you would support
 };
@@ -17,7 +34,6 @@ export class I18n {
 
 @Injectable()
 export class DatepickerI18nService extends NgbDatepickerI18n {
-
   constructor(private _i18n: I18n) {
     super();
   }
@@ -29,5 +45,22 @@ export class DatepickerI18nService extends NgbDatepickerI18n {
   }
   getMonthFullName(month: number): string {
     return this.getMonthShortName(month);
+  }
+}
+
+@Injectable()
+export class NgbDateNativeAdapter extends NgbDateAdapter<Date> {
+  fromModel(date: Date): NgbDateStruct {
+    return date && date.getFullYear
+      ? {
+          year: date.getFullYear(),
+          month: date.getMonth() + 1,
+          day: date.getDate()
+        }
+      : null;
+  }
+
+  toModel(date: NgbDateStruct): Date {
+    return date ? new Date(date.year, date.month - 1, date.day, 12) : null;
   }
 }

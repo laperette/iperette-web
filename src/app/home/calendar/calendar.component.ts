@@ -3,25 +3,14 @@ import {
   OnInit,
   ChangeDetectionStrategy,
   ViewEncapsulation,
-  ViewChild,
   TemplateRef
 } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators/map';
+import { map } from 'rxjs/operators';
 import { BookingService } from '../booking.service';
 import { Booking } from '../../models/Booking';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ClickedDayModalContentComponent } from './clicked-day-modal-content.component';
-import {
-  startOfDay,
-  endOfDay,
-  subDays,
-  addDays,
-  endOfMonth,
-  isSameDay,
-  isSameMonth,
-  addHours
-} from 'date-fns';
 
 import {
   CalendarEvent,
@@ -59,6 +48,7 @@ export class CalendarComponent implements OnInit {
     private modal: NgbModal
   ) {}
   locale = 'fr';
+  activeDayIsOpen: boolean;
   view = 'month';
   weekStartsOn: number = DAYS_OF_WEEK.MONDAY;
   weekendDays: number[] = [DAYS_OF_WEEK.SATURDAY, DAYS_OF_WEEK.SUNDAY];
@@ -69,12 +59,13 @@ export class CalendarComponent implements OnInit {
     const modalRef = this.modal.open(ClickedDayModalContentComponent, {
       size: 'lg'
     });
+    date.setHours(12);
     modalRef.componentInstance.startDate = date;
     modalRef.componentInstance.events = events;
   }
 
   ngOnInit() {
-    this.events$ = this.bookingService.getAllBookings().pipe(
+    this.events$ = this.bookingService.bookings.pipe(
       map(bookings => {
         return bookings.map(booking => {
           return {
@@ -90,6 +81,7 @@ export class CalendarComponent implements OnInit {
         });
       })
     );
+    this.bookingService.getAllBookings().subscribe();
   }
 
   private bookingTitle(booking: Booking): string {
@@ -102,6 +94,7 @@ export class CalendarComponent implements OnInit {
     )}, du ${start} au ${end} (${booking.nbOfGuests} invités).`;
     return title;
   }
+
   private capitalizeFirstLetter(string) {
     return string[0].toUpperCase() + string.slice(1);
   }

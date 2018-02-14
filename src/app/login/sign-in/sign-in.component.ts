@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../auth.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoggerService } from '../../logger.service';
+import { NGXLogger } from 'ngx-logger';
 
 @Component({
   selector: 'app-sign-in',
@@ -12,8 +14,12 @@ export class SignInComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authSvc: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    loggerService: LoggerService
+  ) {
+    this.logger = loggerService.create('SignInComponent');
+  }
+  private logger: NGXLogger;
   signForm: FormGroup;
   isLoading: boolean;
   displayAlert: boolean;
@@ -41,6 +47,7 @@ export class SignInComponent implements OnInit {
         );
       },
       err => {
+        this.logger.error('error sign in', err);
         this.displayAlert = true;
         this.isLoading = false;
       }

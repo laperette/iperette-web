@@ -4,7 +4,7 @@
 <ng-template #confirmAction let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">Etes vous sûr d'annuler cette réservation ? </h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <button type="button" class="close" aria-label="Close" (click)="d()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -12,8 +12,8 @@
     <p>Cette action est irréversible&hellip;</p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Oui, j'annule ma réservation</button>
-    <button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Oula, non surtout pas !</button>
+    <button type="button" class="btn btn-outline-dark" (click)="c()">Oui, j'annule ma réservation</button>
+    <button type="button" class="btn btn-outline-dark" (click)="c()">Oula, non surtout pas !</button>
   </div>
 </ng-template>
 

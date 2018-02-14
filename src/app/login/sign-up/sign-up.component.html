@@ -64,8 +64,7 @@
         </div>
       </div>
       <div class="text-center card-footer">
-        <button class="btn btn-outline-primary" type="submit" [disabled]="!signForm.valid || isLoading">Valider</button>
-        <app-spinner [show]="isLoading"></app-spinner>
+        <app-button-spinner [loading]="isLoading" [disabled]="!signForm.valid" [btnClass]="'btn-outline-primary'">Valider</app-button-spinner>
         <hr>
         <div class="text-left font-italic">
           <span> Déjà inscrit ?
@@ -76,4 +75,3 @@
     </form>
   </div>
 </div>
-{{errors|json}}

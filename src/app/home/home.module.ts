@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { ProfileComponent } from './profile/profile.component';
 import { RouterModule, Routes } from '@angular/router';
 import { CalendarModule } from 'angular-calendar';
@@ -15,6 +15,11 @@ import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { ClickedDayModalContentComponent } from './calendar/clicked-day-modal-content.component';
 import { BookingListComponent } from './booking-list/booking-list.component';
 import { BookingActionsComponent } from './booking-actions/booking-actions.component';
+
+import localeFr from '@angular/common/locales/fr';
+import { SharedModule } from '../shared/shared.module';
+
+registerLocaleData(localeFr);
 
 const homeRoutes: Routes = [
   {
@@ -40,6 +45,7 @@ const homeRoutes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
+    SharedModule,
     ReactiveFormsModule,
     CalendarModule.forRoot(),
     RouterModule.forChild(homeRoutes),

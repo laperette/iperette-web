@@ -1,71 +1,73 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  TemplateRef
+} from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { BookingService } from '../booking.service';
 import { Booking } from '../../models/Booking';
+import { distanceInWords } from 'date-fns';
+import * as frLocale from 'date-fns/locale/fr/index.js';
+
 @Component({
   selector: 'app-clicked-day-modal-content',
   template: `
-    <div class="modal-header">
-    <h5 *ngIf="events?.length <= 0" class="modal-title">
-    Réserver du {{ startDate | date: 'dd/MM/yyyy' }} au {{ endDate | date: 'dd/MM/yyyy' }}</h5>
-    <h5 *ngIf="events?.length == 1" class="modal-title">Une réservation existe déjà à cette date</h5>
-    <h5 *ngIf="events?.length > 1" class="modal-title">Plusieurs réservations existent déjà à cette date</h5>
-    <button type="button" class="close" (click)="activeModal.close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-  <ngb-alert [dismissible]="false" *ngIf="events?.length > 0" [type]="'danger'">
-    <p *ngFor="let event of events">{{ event.title }}</p>
-  </ngb-alert>
-  <div *ngIf="events?.length <= 0">
-    <form>
-      <app-booking-form [startDate]="startDate" (newBooking)="manageNewBooking($event)"></app-booking-form>
-      <div class="form-group">
-        <label for="numOfParticipants">Nombre de personnes</label>
-        <input id="numOfParticipants" class="form-control" name="numOfParticipants" [(ngModel)]="numOfParticipants"
-        placeholder="Nombre de participants">
+      <ng-container *ngIf="events?.length <= 0; else hasResa">
+        <div class="modal-header">
+          <h5 class="modal-title">Nouvelle réservation</h5>
+        </div>
+        <div class="modal-body">
+          <app-booking-form [(booking)]="newBooking" [submitButton]="submitButton"></app-booking-form>
+        </div>
+      </ng-container>
+
+      <ng-template #hasResa>
+      <div class="modal-header">
+        <h5 class="modal-title">Détail de la réservation : </h5>
       </div>
-    </form>
-    <div class="modal-footer justify-content">
-      <p>Réservation du {{ startDate | date: 'dd/MM/yyyy' }} au {{ endDate | date: 'dd/MM/yyyy' }}</p>
-      <button type="button" class="btn btn-outline-primary" [disabled]="loading" (click)="onSubmit()">Je réserve !</button>
-    </div>
-  </div>
+      <div class="modal-body">
+        <ngb-alert [dismissible]="false" [type]="'danger'">
+          <p *ngFor="let event of events">{{ event.title }}</p>
+        </ngb-alert>
+      </div>
+    </ng-template>
+
+      <ng-template #submitButton let-valid="valid">
+        <app-button-spinner (click)="onSubmit()" [loading]="isLoading" [disabled]="!valid" [btnClass]="'btn-outline-primary'">
+          Je réserve !
+        </app-button-spinner>
+      <ng-template>
   `
 })
-export class ClickedDayModalContentComponent {
+export class ClickedDayModalContentComponent implements OnInit {
   @Input() startDate: Date;
   @Input() events;
-  @Output() newEndDateChosen: EventEmitter<Date> = new EventEmitter<Date>();
-  endDate: Date;
-  numOfParticipants: number;
-  loading = false;
-
-  manageNewBooking(booking: Booking) {
-    this.endDate = booking.endDate;
-    this.newEndDateChosen.emit(this.endDate);
-  }
-
-  onSubmit() {
-    const booking = new Booking();
-    booking.startDate = this.startDate;
-    booking.endDate = this.endDate;
-    booking.nbOfGuests = this.numOfParticipants;
-    this.loading = true;
-    this.bookingSvc.createBooking(booking).subscribe(
-      resp => {
-        this.loading = false;
-        this.activeModal.close();
-      },
-      err => {
-        this.loading = false;
-      }
-    );
-  }
-
+  isLoading = false;
+  newBooking: Booking = new Booking();
+  hasResa: TemplateRef<any>;
   constructor(
     public activeModal: NgbActiveModal,
     private bookingSvc: BookingService
   ) {}
+
+  ngOnInit() {
+    this.newBooking.startDate = this.startDate;
+    console.log(this.events);
+  }
+
+  onSubmit() {
+    this.isLoading = true;
+    this.bookingSvc.createBooking(this.newBooking).subscribe(
+      resp => {
+        this.isLoading = false;
+        this.activeModal.close();
+      },
+      err => {
+        this.isLoading = false;
+      }
+    );
+  }
 }

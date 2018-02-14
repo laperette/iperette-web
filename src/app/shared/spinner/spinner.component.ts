@@ -3,7 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 @Component({
   selector: 'app-spinner',
   template: `
-  <div class="loader" *ngIf="show"></div>
+  <i class="fa fa-spinner fa-pulse" *ngIf="show"></i>
 `,
   styleUrls: ['./spinner.component.css']
 })

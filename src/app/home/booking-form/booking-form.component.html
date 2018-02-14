@@ -1,41 +1,81 @@
-<form class="form" [formGroup]="bookingForm" (submit)="submit()" novalidate>
+<form class="form" [formGroup]="bookingForm" novalidate>
   <div class="form-group">
     <div class="input-group">
       <div class="input-group-prepend">
+        <span class="input-group-text">
+          <i class="fa fa-calendar" aria-hidden="true"></i>
+        </span>
         <span class="input-group-text">Début</span>
       </div>
-      <input type="date" class="form-control" formControlName="startDate">
+      <input placeholder="jj/mm/aaaa" class="form-control" formControlName="startDate" ngbDatepicker #dStart="ngbDatepicker" (click)="dStart.toggle()"
+        [dayTemplate]="customDay" [markDisabled]="isDisabledForStartDate">
+      <div class="invalid-tooltip" *ngIf="startDate.errors && (startDate.dirty || startDate.touched)">
+        Une date de début de séjour est requise
+      </div>
     </div>
   </div>
-
   <div class="form-group">
     <div class="input-group">
       <div class="input-group-prepend">
+        <span class="input-group-text">
+          <i class="fa fa-calendar" aria-hidden="true"></i>
+        </span>
         <span class="input-group-text">Fin</span>
       </div>
-      <input type="date" class="form-control" formControlName="endDate">
+      <input placeholder="jj/mm/aaaa" class="form-control" formControlName="endDate" ngbDatepicker #dEnd="ngbDatepicker" (click)="dEnd.toggle()"
+        [dayTemplate]="customDay" [markDisabled]="isDisabledForEndDate">
+      <div class="invalid-tooltip" *ngIf="endDate.errors && (endDate.dirty || endDate.touched)">
+        Une date de fin de séjour est requise
+      </div>
     </div>
   </div>
-
+  <div class="invalid-tooltip" *ngIf="bookingForm.hasError('alreadyBookedDates')">
+    Ces dates ne sont pas disponibles
+  </div>
+  <div class="invalid-tooltip" *ngIf="bookingForm.hasError('endBeforeStart')">
+    La date de fin ne peut pas être avant la date de début
+  </div>
   <div class="form-group">
     <div class="input-group">
       <div class="input-group-prepend">
         <span class="input-group-text">Nombre d'invités</span>
       </div>
       <input type="text" class="form-control" placeholder="Entrez un nombre" formControlName="nbOfGuests">
+      <div class="invalid-tooltip" *ngIf="nbOfGuests.errors && (nbOfGuests.dirty || nbOfGuests.touched)">
+        Un nombre d'invités est requis
+      </div>
     </div>
   </div>
 
   <div class="form-group">
     <div *ngIf="full" class="btn-group btn-group-toggle" ngbRadioGroup name="status" formControlName="status">
       <label ngbButtonLabel class="btn-outline-success">
-        <input ngbButton type="radio" [value]="'VALIDATED'"> Valide
+        <input ngbButton type="radio" [value]="bookingStatus.ACCEPTED"> Acceptée
+      </label>
+      <label ngbButtonLabel class="btn-outline-warning">
+        <input ngbButton type="radio" [value]="bookingStatus.PENDING"> En cours d'acceptation
       </label>
       <label ngbButtonLabel class="btn-outline-danger">
-        <input ngbButton type="radio" [value]="'PENDING'"> En cours de validation
+        <input ngbButton type="radio" [value]="bookingStatus.CANCELED"> Annulée
       </label>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <p>Réservation du {{ startDate.value | date: 'dd/MM/yyyy' }}
+        <span *ngIf="endDate.value">au {{ endDate.value | date: 'dd/MM/yyyy' }}</span>
+        <span *ngIf="nbOfGuests.value"> pour {{ nbOfGuests.value }} personnes</span>
+        <span *ngIf="endDate.value && startDate.value">({{ duration }})</span>
+      </p>
+    </div>
+    <div>
+      <ng-container *ngTemplateOutlet="submitButton;context:bookingForm"></ng-container>
     </div>
   </div>
 </form>
 
-{{ bookingForm.value | json }}
+<ng-template #customDay let-date="date" let-currentMonth="currentMonth" let-selected="selected" let-disabled="disabled" let-focused="focused">
+  <span class="custom-day" [class.disabled-day]="disabled" [class.bg-primary]="selected" [class.focused]="focused" [style.color]="getColorForDate(date)">
+    {{ date.day }}
+  </span>
+</ng-template>

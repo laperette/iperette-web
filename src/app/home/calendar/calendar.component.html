@@ -19,7 +19,7 @@
       </ng-template>
       <div *ngIf="events$ | async; else loading; let events">
         <mwl-calendar-month-view [cellTemplate]="c" [viewDate]="viewDate" [events]="events" [locale]="locale" [weekStartsOn]="weekStartsOn"
-          [weekendDays]="weekendDays" (dayClicked)="dayClicked($event.day)" (eventClicked)="handleEvent('Clicked', $event.event)">
+          [weekendDays]="weekendDays" (dayClicked)="dayClicked($event.day)">
         </mwl-calendar-month-view>
       </div>
     </div>

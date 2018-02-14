@@ -9,9 +9,12 @@ import { CustomHttpInterceptor } from './interceptors/custom-http.interceptor';
 
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AuthService } from './auth.service';
+import { AuthService, getToken } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { JwtModule } from '@auth0/angular-jwt';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { LoggerService } from './logger.service';
+import { environment } from '../environments/environment';
 
 const appRoutes: Routes = [
   { path: 'login', loadChildren: 'app/login/login.module#LoginModule' },
@@ -37,9 +40,14 @@ const appRoutes: Routes = [
     NgbModule.forRoot(),
     JwtModule.forRoot({
       config: {
-        tokenGetter: () => localStorage.getItem('token'),
-        whitelistedDomains: ['localhost:8080']
+        tokenGetter: getToken,
+        whitelistedDomains: environment.domains,
+        throwNoTokenError: false
       }
+    }),
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.TRACE, // environment.production ? NgxLoggerLevel.OFF : NgxLoggerLevel.TRACE,
+      serverLogLevel: NgxLoggerLevel.OFF
     })
   ],
   providers: [
@@ -49,7 +57,8 @@ const appRoutes: Routes = [
       provide: HTTP_INTERCEPTORS,
       useClass: CustomHttpInterceptor,
       multi: true
-    }
+    },
+    LoggerService
   ],
   bootstrap: [AppComponent]
 })
