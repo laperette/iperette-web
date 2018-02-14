@@ -6,5 +6,5 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:8080/api',
-  domains: ['localhost:8080', 'laperette.herokuapp.com']
+  domains: ['localhost:8080', 'iperette-api.herokuapp.com']
 };
